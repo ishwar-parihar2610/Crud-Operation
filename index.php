@@ -1,6 +1,6 @@
 //Connect To Database
 <?php
-
+$insert=false;
 // INSERT INTO `notes` (`sno`, `title`, `description`, `tstamp`) VALUES (NULL, 'Buy Books', 'Please Buy books From Store', current_timestamp());
 $servername="localhost";
 $username="root";
@@ -24,7 +24,7 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
   $sql="INSERT INTO notes(title,description)  VALUES ('$title','$description')";
   $result=mysqli_query($connection,$sql);
   if($result){
-    echo "The record Has been Inserted Succesfully";
+    $insert=true;
   }else{
     echo "The record has been Not inserted Succesfully because of this error --> ". mysqli_error($connection);
   }
@@ -46,6 +46,17 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
+  <link rel="stylesheet" href="//cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+ </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="crossorigin="anonymous"></script>
+  <script src="//cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+    
+  <script>
+    $(document).ready(function () {
+      $('#myTable').DataTable();
+    });
+  </script>
   <title>Notes -Notes taking made Easy</title>
 </head>
 
@@ -81,6 +92,15 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
     </div>
   </nav>
 
+  <?php
+if($insert){
+echo "<div class='alert alert-warning alert-dismissible fade show' role='alert'>
+<strong>Success!</strong> Your Note has Been Successfully inserted
+<button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+</div>";
+
+}
+  ?>
   <div class="container my-5">
     <h2>Add a Note</h2>
     <form action="/crud/index.php" method="post">
@@ -98,12 +118,12 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
   </div>
 
   <div class="container">
-    
 
 
 
 
-    <table class="table">
+
+    <table class="table" id="myTable">
       <thead>
         <tr>
           <th scope="col">S.NO</th>
@@ -114,10 +134,10 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
       </thead>
       <tbody>
 
-      <?php
-$sql="SELECT * FROM `notes`";
-$result=mysqli_query($connection,$sql);
-while($row=mysqli_fetch_assoc($result)){
+        <?php
+          $sql="SELECT * FROM `notes`";
+          $result=mysqli_query($connection,$sql);
+        while($row=mysqli_fetch_assoc($result)){
   echo " <tr>
   <th scope='row'>" .$row['sno'] . "</th>
   <td>" .$row['title'] . "</td>
@@ -127,8 +147,8 @@ while($row=mysqli_fetch_assoc($result)){
   
 }
 ?>
-       
-        
+
+
       </tbody>
     </table>
 
